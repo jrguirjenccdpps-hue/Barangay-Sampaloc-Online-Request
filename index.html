@@ -44,6 +44,7 @@
   .tab {
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: 10px;
     padding: 20px 40px;
     background: #28a745;
@@ -167,12 +168,33 @@
     100% { box-shadow: inset 0px 0px 0px 30px #28a745; }
   }
 
+  /* Mobile Optimization */
   @media (max-width: 768px) {
-    h2 { font-size: 28px; }
-    .tab { font-size: 18px; padding: 15px 25px; }
-    .form-container, .confirmation-container { padding: 30px; }
-    input { padding: 16px; }
-    button { padding: 16px; font-size: 18px; }
+    h2 { font-size: 26px; margin: 30px 10px 20px; }
+    .tabs {
+      flex-direction: column;
+      gap: 15px;
+      align-items: stretch;
+      margin-bottom: 30px;
+    }
+    .tab { font-size: 18px; padding: 15px; width: 100%; justify-content: center; }
+    .form-container, .confirmation-container {
+      padding: 25px;
+      width: 95%;
+    }
+    input {
+      padding: 16px;
+      font-size: 16px;
+      border-radius: 10px;
+    }
+    button {
+      padding: 18px;
+      font-size: 18px;
+      border-radius: 10px;
+      margin-top: 12px;
+    }
+    .back-button { font-size: 16px; padding: 16px; }
+    .confirm-button { font-size: 18px; padding: 18px; }
   }
 </style>
 </head>
@@ -225,6 +247,7 @@
     <input name="address" placeholder="Address" required>
     <input name="age" placeholder="Age" type="number" required>
     <input name="birthplace" placeholder="Place of Birth" required>
+    <input name="purpose" placeholder="Purpose" required>
     <input name="civilstatus" placeholder="Civil Status" required>
     <button type="submit">Submit</button>
   </form>
@@ -304,9 +327,10 @@ document.addEventListener("DOMContentLoaded", function(){
     submitButton.disabled = true;
     submitButton.innerText = "Submitting...";
 
-    const data = Array.from(form.elements)
+    // Add date stamp as first value
+    const data = [new Date().toLocaleString()].concat(Array.from(form.elements)
       .filter(el=> el.tagName==='INPUT')
-      .map(el=> el.value);
+      .map(el=> el.value));
 
     const payload = { sheet, values: data };
 
