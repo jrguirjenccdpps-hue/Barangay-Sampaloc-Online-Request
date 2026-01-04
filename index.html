@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Barangay Sampaloc Online Request</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: linear-gradient(135deg, #e6f2e6, #c3e6c3);
+  }
+
+  /* Title animation */
+  h2 {
+    text-align: center;
+    color: #006400;
+    font-size: 36px;
+    margin: 40px 20px 20px;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+    opacity: 0;
+    transform: translateY(-20px);
+    animation: fadeDown 1s forwards;
+  }
+
+  @keyframes fadeDown {
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Tabs */
+  .tabs {
+    display: flex;
+    gap: 25px;
+    justify-content: center;
+    margin-bottom: 40px;
+    flex-wrap: wrap;
+  }
+
+  .tab {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 20px 40px;
+    background: #28a745;
+    color: white;
+    cursor: pointer;
+    border-radius: 12px;
+    transition: all 0.3s;
+    font-size: 20px;
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+  }
+
+  .tab:hover { 
+    background: #218838;
+    transform: scale(1.05);
+  }
+
+  /* Forms & confirmation */
+  .form-container, .confirmation-container {
+    display: none;
+    background: white;
+    padding: 45px;
+    border-radius: 18px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+    width: 95%;
+    max-width: 1200px;
+    margin-bottom: 50px;
+    opacity: 0;
+    transform: translateY(25px);
+    transition: all 0.5s ease;
+  }
+
+  .form-container.show, .confirmation-container.show {
+    display: block;
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  input {
+    display: block;
+    margin-bottom: 20px;
+    padding: 18px;
+    width: 100%;
+    font-size: 18px;
+    border: 1px solid #ccc;
+    border-radius: 12px;
+  }
+
+  button {
+    padding: 20px;
+    background: #28a745;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 12px;
+    width: 100%;
+    font-size: 20px;
+    margin-top: 15px;
+    transition: all 0.3s;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+  }
+
+  button:hover:not(:disabled) { 
+    background: #218838;
+    transform: scale(1.03);
+  }
+  button:disabled { background: #6c757d; cursor:not-allowed; }
+
+  .back-button {
+    background: #006400;
+    margin-bottom: 25px;
+    padding: 18px;
+    font-size: 18px;
+  }
+  .back-button:hover { background: #004d00; }
+
+  .confirm-button {
+    background: #28a745;
+    padding: 20px;
+    font-size: 20px;
+  }
+  .confirm-button:hover { background: #218838; }
+
+  /* Animated confirmation checkmark */
+  .checkmark {
+    width: 80px;
+    height: 80px;
+    stroke-width: 2;
+    stroke: #28a745;
+    stroke-miterlimit: 10;
+    margin: 20px auto;
+    box-shadow: inset 0px 0px 0px #28a745;
+    animation: fill .4s ease-in-out .4s forwards, scale .3s ease-in-out .9s both;
+  }
+
+  .checkmark__circle {
+    stroke-dasharray: 166;
+    stroke-dashoffset: 166;
+    stroke-width: 2;
+    stroke-miterlimit: 10;
+    stroke: #28a745;
+    fill: none;
+    animation: stroke 0.6s cubic-bezier(.65,.05,.36,1) forwards;
+  }
+
+  .checkmark__check {
+    transform-origin: 50% 50%;
+    stroke-dasharray: 48;
+    stroke-dashoffset: 48;
+    animation: stroke 0.3s cubic-bezier(.65,.05,.36,1) 0.7s forwards;
+  }
+
+  @keyframes stroke {
+    100% { stroke-dashoffset: 0; }
+  }
+  @keyframes scale {
+    0%, 100% { transform: none; }
+    50% { transform: scale3d(1.1, 1.1, 1); }
+  }
+  @keyframes fill {
+    100% { box-shadow: inset 0px 0px 0px 30px #28a745; }
+  }
+
+  @media (max-width: 768px) {
+    h2 { font-size: 28px; }
+    .tab { font-size: 18px; padding: 15px 25px; }
+    .form-container, .confirmation-container { padding: 30px; }
+    input { padding: 16px; }
+    button { padding: 16px; font-size: 18px; }
+  }
+</style>
+</head>
+<body>
+
+<h2>Barangay Sampaloc Online Request</h2>
+
+<div id="tabSelection" class="tabs">
+  <div class="tab" data-target="BarangayClearance">📝 Barangay Clearance</div>
+  <div class="tab" data-target="CertificateOfIndigency">📄 Certificate of Indigency</div>
+  <div class="tab" data-target="BarangayID">👤 Barangay ID</div>
+  <div class="tab" data-target="CertificateOfResidency">🏠 Certificate of Residency</div>
+</div>
+
+<!-- Forms -->
+<div id="BarangayClearance" class="form-container">
+  <button class="back-button" onclick="goBack('BarangayClearance')">⬅ Back</button>
+  <h3>Barangay Clearance</h3>
+  <form onsubmit="submitForm(event, 'BarangayClearance')">
+    <input name="fullname" placeholder="Full Name" required>
+    <input name="address" placeholder="Address" required>
+    <input name="age" placeholder="Age" type="number" required>
+    <input name="birthplace" placeholder="Place of Birth" required>
+    <input name="purpose" placeholder="Purpose" required>
+    <input name="civilstatus" placeholder="Civil Status" required>
+    <button type="submit">Submit</button>
+  </form>
+</div>
+
+<div id="CertificateOfIndigency" class="form-container">
+  <button class="back-button" onclick="goBack('CertificateOfIndigency')">⬅ Back</button>
+  <h3>Certificate of Indigency</h3>
+  <form onsubmit="submitForm(event, 'CertificateOfIndigency')">
+    <input name="fullname" placeholder="Full Name" required>
+    <input name="address" placeholder="Address" required>
+    <input name="age" placeholder="Age" type="number" required>
+    <input name="birthplace" placeholder="Place of Birth" required>
+    <input name="purpose" placeholder="Purpose" required>
+    <input name="civilstatus" placeholder="Civil Status" required>
+    <input name="lengthofstay" placeholder="Length of Stay" required>
+    <button type="submit">Submit</button>
+  </form>
+</div>
+
+<div id="BarangayID" class="form-container">
+  <button class="back-button" onclick="goBack('BarangayID')">⬅ Back</button>
+  <h3>Barangay ID</h3>
+  <form onsubmit="submitForm(event, 'BarangayID')">
+    <input name="fullname" placeholder="Full Name" required>
+    <input name="address" placeholder="Address" required>
+    <input name="age" placeholder="Age" type="number" required>
+    <input name="birthplace" placeholder="Place of Birth" required>
+    <input name="civilstatus" placeholder="Civil Status" required>
+    <button type="submit">Submit</button>
+  </form>
+</div>
+
+<div id="CertificateOfResidency" class="form-container">
+  <button class="back-button" onclick="goBack('CertificateOfResidency')">⬅ Back</button>
+  <h3>Certificate of Residency</h3>
+  <form onsubmit="submitForm(event, 'CertificateOfResidency')">
+    <input name="fullname" placeholder="Full Name" required>
+    <input name="address" placeholder="Address" required>
+    <input name="age" placeholder="Age" type="number" required>
+    <input name="birthplace" placeholder="Place of Birth" required>
+    <input name="purpose" placeholder="Purpose" required>
+    <input name="civilstatus" placeholder="Civil Status" required>
+    <input name="lengthofstay" placeholder="Length of Stay" required>
+    <button type="submit">Submit</button>
+  </form>
+</div>
+
+<!-- Confirmation Screen -->
+<div id="confirmation" class="confirmation-container">
+  <svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
+    <circle class="checkmark__circle" cx="26" cy="26" r="25" fill="none"/>
+    <path class="checkmark__check" fill="none" d="M14 27l7 7 17-17"/>
+  </svg>
+  <h3 style="text-align:center; color:#28a745;">✅ Thank You!</h3>
+  <p style="text-align:center;">Your request has been submitted successfully.</p>
+  <button class="confirm-button" onclick="goToTabs()">Back to Requests</button>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function(){
+  const tabs = document.querySelectorAll('.tab');
+  const forms = document.querySelectorAll('.form-container');
+  const tabSelection = document.getElementById('tabSelection');
+  const confirmation = document.getElementById('confirmation');
+
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      tabSelection.style.display = 'none';
+      forms.forEach(f => {
+        f.style.display = 'none';
+        f.classList.remove('show');
+      });
+      const target = document.getElementById(tab.dataset.target);
+      if(target){
+        target.style.display = 'block';
+        setTimeout(()=> target.classList.add('show'), 50);
+      }
+    });
+  });
+
+  window.goBack = function(formId){
+    const formDiv = document.getElementById(formId);
+    if(formDiv){
+      formDiv.classList.remove('show');
+      setTimeout(()=>{
+        formDiv.style.display='none';
+        tabSelection.style.display='flex';
+      }, 300);
+    }
+  }
+
+  window.goToTabs = function(){
+    confirmation.classList.remove('show');
+    setTimeout(()=>{
+      confirmation.style.display='none';
+      tabSelection.style.display='flex';
+    }, 300);
+  }
+
+  window.submitForm = async function(e, sheet){
+    e.preventDefault();
+    const form = e.target;
+    const submitButton = form.querySelector("button");
+    submitButton.disabled = true;
+    submitButton.innerText = "Submitting...";
+
+    const data = Array.from(form.elements)
+      .filter(el=> el.tagName==='INPUT')
+      .map(el=> el.value);
+
+    const payload = { sheet, values: data };
+
+    try{
+      const response = await fetch("https://script.google.com/macros/s/AKfycbw0o9ENS3x0d3vWKxJ2LZsus6eQBavaQW_x207Z3xP43hyk6MbjZ36FmM27OjEN03Lh/exec",{
+        method:"POST",
+        body: JSON.stringify(payload),
+      });
+      const result = await response.json();
+      if(result.result==="success"){
+        form.reset();
+        form.classList.remove('show');
+        form.style.display='none';
+        confirmation.style.display='block';
+        setTimeout(()=> confirmation.classList.add('show'),50);
+      } else{
+        alert("❌ Error: "+result.message);
+        submitButton.disabled=false;
+        submitButton.innerText="Submit";
+      }
+    } catch(err){
+      alert("❌ Submission failed: "+err);
+      submitButton.disabled=false;
+      submitButton.innerText="Submit";
+    }
+  }
+});
+</script>
+
+</body>
+</html>
