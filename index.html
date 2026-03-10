@@ -3,152 +3,633 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Barangay Sampaloc Online Request</title>
-<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+<title>Barangay Sampaloc Online Services Portal</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body {
-    font-family: 'Roboto', sans-serif;
-    background: #e9f5ec;
-    color: #2c3e2f;
-    padding: 20px;
+  :root {
+    --primary: #1a5f3f;
+    --primary-light: #2d8a5e;
+    --primary-dark: #124a2f;
+    --accent: #d4af37;
+    --bg-light: #f8faf9;
+    --text-dark: #1f2937;
+    --text-muted: #6b7280;
+    --border: #e5e7eb;
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    --radius: 12px;
   }
 
-  h2 {
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%);
+    color: var(--text-dark);
+    min-height: 100vh;
+    padding: 40px 20px;
+    line-height: 1.6;
+  }
+
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  header {
     text-align: center;
-    color: #2e7d32;
-    margin-bottom: 25px;
-    font-size: 1.8em;
+    margin-bottom: 50px;
+    position: relative;
+  }
+
+  .official-seal {
+    width: 80px;
+    height: 80px;
+    background: var(--primary);
+    border-radius: 50%;
+    margin: 0 auto 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 32px;
+    box-shadow: var(--shadow-md);
+    border: 4px solid var(--accent);
+  }
+
+  h1 {
+    font-size: 2.25rem;
     font-weight: 700;
+    color: var(--primary-dark);
+    margin-bottom: 8px;
+    letter-spacing: -0.025em;
+  }
+
+  .subtitle {
+    color: var(--text-muted);
+    font-size: 1.125rem;
+    font-weight: 400;
+  }
+
+  .section-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--primary-dark);
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .section-title::before {
+    content: '';
+    width: 4px;
+    height: 24px;
+    background: var(--primary);
+    border-radius: 2px;
   }
 
   .cards {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-    gap: 20px;
-    margin-bottom: 30px;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 24px;
+    margin-bottom: 40px;
   }
 
   .card {
     background: white;
-    border-radius: 15px;
-    box-shadow: 0 6px 15px rgba(0,0,0,0.1);
-    padding: 25px 15px;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-sm);
+    padding: 32px 24px;
     text-align: center;
     cursor: pointer;
-    transition: transform 0.3s, box-shadow 0.3s;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 1px solid var(--border);
+    position: relative;
+    overflow: hidden;
   }
-  .card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.15); }
 
-  .card i { font-size: 36px; color: #43a047; margin-bottom: 10px; }
-  .card h3 { font-size: 1.1em; font-weight: 500; color: #2e7d32; }
+  .card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: var(--primary);
+    transform: scaleX(0);
+    transition: transform 0.3s ease;
+  }
+
+  .card:hover { 
+    transform: translateY(-4px); 
+    box-shadow: var(--shadow-lg);
+    border-color: var(--primary-light);
+  }
+
+  .card:hover::before {
+    transform: scaleX(1);
+  }
+
+  .card-icon-wrapper {
+    width: 64px;
+    height: 64px;
+    background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%);
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 16px;
+    transition: all 0.3s ease;
+  }
+
+  .card:hover .card-icon-wrapper {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+  }
+
+  .card i { 
+    font-size: 28px; 
+    color: var(--primary); 
+    transition: color 0.3s ease;
+  }
+
+  .card:hover i {
+    color: white;
+  }
+
+  .card h3 { 
+    font-size: 1.125rem; 
+    font-weight: 600; 
+    color: var(--text-dark);
+    margin-bottom: 8px;
+  }
+
+  .card p {
+    font-size: 0.875rem;
+    color: var(--text-muted);
+    line-height: 1.5;
+  }
 
   .form-container {
     display: none;
     background: white;
-    padding: 25px 20px;
-    border-radius: 15px;
-    box-shadow: 0 6px 15px rgba(0,0,0,0.1);
-    max-width: 500px;
-    margin: 0 auto 30px auto;
-    transition: all 0.3s ease;
+    padding: 40px;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-lg);
+    max-width: 600px;
+    margin: 0 auto 40px auto;
+    border: 1px solid var(--border);
+    animation: slideIn 0.3s ease-out;
   }
+
+  @keyframes slideIn {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
   .form-container.active { display: block; }
 
-  h3.form-title {
+  .form-header {
     text-align: center;
-    color: #2e7d32;
+    margin-bottom: 32px;
+    padding-bottom: 24px;
+    border-bottom: 2px solid var(--border);
+  }
+
+  .form-icon {
+    width: 56px;
+    height: 56px;
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 16px;
+    color: white;
+    font-size: 24px;
+  }
+
+  h3.form-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--primary-dark);
+    margin-bottom: 8px;
+  }
+
+  .form-subtitle {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+  }
+
+  .back-btn { 
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 24px;
+    color: var(--primary);
+    cursor: pointer; 
+    font-weight: 500;
+    font-size: 0.95rem;
+    padding: 8px 16px;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+    text-decoration: none;
+  }
+
+  .back-btn:hover { 
+    background: #f0fdf4;
+    color: var(--primary-dark);
+  }
+
+  .form-group {
     margin-bottom: 20px;
   }
 
-  input { display: block; width: 100%; padding: 12px 15px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 8px; font-size: 1em; }
-  input:focus { border-color: #43a047; box-shadow: 0 0 5px #43a04750; outline: none; }
+  label {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--text-dark);
+    margin-bottom: 6px;
+  }
+
+  .required::after {
+    content: ' *';
+    color: #dc2626;
+  }
+
+  input { 
+    display: block; 
+    width: 100%; 
+    padding: 12px 16px; 
+    border: 1px solid var(--border); 
+    border-radius: 8px; 
+    font-size: 1rem;
+    font-family: inherit;
+    transition: all 0.2s ease;
+    background: #fafafa;
+  }
+
+  input:hover {
+    background: white;
+    border-color: #d1d5db;
+  }
+
+  input:focus { 
+    border-color: var(--primary); 
+    box-shadow: 0 0 0 3px rgba(26, 95, 63, 0.1);
+    background: white;
+    outline: none; 
+  }
+
+  input:disabled {
+    background: #f3f4f6;
+    cursor: not-allowed;
+    opacity: 0.7;
+  }
+
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+
+  @media (max-width: 640px) {
+    .form-row {
+      grid-template-columns: 1fr;
+    }
+  }
 
   button {
-    padding: 12px; width: 100%; font-size: 1em; background: #43a047; color: white; border: none; border-radius: 8px; cursor: pointer;
-    display: flex; justify-content: center; align-items: center; gap: 5px; transition: background 0.3s, transform 0.2s;
+    padding: 14px 24px;
+    width: 100%;
+    font-size: 1rem;
+    font-weight: 600;
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+    color: white; 
+    border: none; 
+    border-radius: 8px; 
+    cursor: pointer;
+    display: flex; 
+    justify-content: center; 
+    align-items: center; 
+    gap: 8px; 
+    transition: all 0.2s ease;
+    box-shadow: var(--shadow-sm);
+    margin-top: 8px;
   }
-  button:hover { background: #388e3c; transform: scale(1.02); }
-  .btn-spinner { font-size: 0.9em; display: none; color: white; }
 
-  .back-btn { display: inline-block; margin-bottom: 15px; color: #43a047; cursor: pointer; font-weight: 500; text-decoration: underline; }
-  .back-btn:hover { color: #2e7d32; }
+  button:hover:not(:disabled) { 
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-md);
+    background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 100%);
+  }
 
-  @media(max-width: 500px){
-    h2 { font-size: 1.5em; }
-    .card i { font-size: 28px; }
-    .card h3 { font-size: 1em; }
+  button:active:not(:disabled) {
+    transform: translateY(0);
+  }
+
+  button:disabled {
+    opacity: 0.8;
+    cursor: not-allowed;
+  }
+
+  .btn-spinner { 
+    font-size: 0.9em; 
+    display: none; 
+  }
+
+  .status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    background: #dcfce7;
+    color: var(--primary-dark);
+    border-radius: 20px;
+    font-size: 0.875rem;
+    font-weight: 600;
+  }
+
+  footer {
+    text-align: center;
+    margin-top: 60px;
+    padding-top: 40px;
+    border-top: 1px solid var(--border);
+    color: var(--text-muted);
+    font-size: 0.875rem;
+  }
+
+  .footer-links {
+    display: flex;
+    justify-content: center;
+    gap: 24px;
+    margin-bottom: 16px;
+  }
+
+  .footer-links a {
+    color: var(--text-muted);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .footer-links a:hover {
+    color: var(--primary);
+  }
+
+  @media(max-width: 640px){
+    body { padding: 20px 16px; }
+    h1 { font-size: 1.75rem; }
+    .form-container { padding: 24px; }
+    .cards { grid-template-columns: 1fr; }
   }
 </style>
+<base target="_blank">
 </head>
 <body>
 
-<h2>Barangay Sampaloc Online Request</h2>
+<div class="container">
+  <header>
+    <div class="official-seal">
+      <i class="fas fa-landmark"></i>
+    </div>
+    <h1>Barangay Sampaloc</h1>
+    <p class="subtitle">Online Document Request Portal</p>
+  </header>
 
-<div class="cards">
-  <div class="card" data-target="BarangayClearance"><i class="fas fa-file-alt"></i><h3>Barangay Clearance</h3></div>
-  <div class="card" data-target="CertificateOfIndigency"><i class="fas fa-hand-holding-heart"></i><h3>Certificate of Indigency</h3></div>
-  <div class="card" data-target="BarangayID"><i class="fas fa-id-card"></i><h3>Barangay ID</h3></div>
-  <div class="card" data-target="CertificateOfResidency"><i class="fas fa-home"></i><h3>Certificate of Residency</h3></div>
-</div>
+  <div class="section-title">Select Document Type</div>
+  
+  <div class="cards">
+    <div class="card" data-target="BarangayClearance">
+      <div class="card-icon-wrapper">
+        <i class="fas fa-file-certificate"></i>
+      </div>
+      <h3>Barangay Clearance</h3>
+      <p>Official clearance for employment, business, or legal purposes</p>
+    </div>
+    
+    <div class="card" data-target="CertificateOfIndigency">
+      <div class="card-icon-wrapper">
+        <i class="fas fa-hand-holding-heart"></i>
+      </div>
+      <h3>Certificate of Indigency</h3>
+      <p>Proof of financial status for medical or educational assistance</p>
+    </div>
+    
+    <div class="card" data-target="BarangayID">
+      <div class="card-icon-wrapper">
+        <i class="fas fa-id-card"></i>
+      </div>
+      <h3>Barangay ID</h3>
+      <p>Official identification card for barangay residents</p>
+    </div>
+    
+    <div class="card" data-target="CertificateOfResidency">
+      <div class="card-icon-wrapper">
+        <i class="fas fa-home"></i>
+      </div>
+      <h3>Certificate of Residency</h3>
+      <p>Verification of residence for official transactions</p>
+    </div>
+  </div>
 
-<!-- Forms -->
-<div id="BarangayClearance" class="form-container">
-  <span class="back-btn" onclick="goBack()">← Back</span>
-  <h3 class="form-title">Barangay Clearance</h3>
-  <form onsubmit="submitForm(event, 'BarangayClearance')">
-    <input name="fullname" placeholder="Full Name" required>
-    <input name="address" placeholder="Address" required>
-    <input name="age" placeholder="Age" type="number" required>
-    <input name="birthplace" placeholder="Place of Birth" required>
-    <input name="purpose" placeholder="Purpose" required>
-    <input name="civilstatus" placeholder="Civil Status" required>
-    <button type="submit"><span class="btn-text">Submit</span><span class="btn-spinner"><i class="fas fa-spinner fa-spin"></i> Sending...</span></button>
-  </form>
-</div>
+  <!-- Forms -->
+  <div id="BarangayClearance" class="form-container">
+    <span class="back-btn" onclick="goBack()"><i class="fas fa-arrow-left"></i> Back to Services</span>
+    <div class="form-header">
+      <div class="form-icon"><i class="fas fa-file-certificate"></i></div>
+      <h3 class="form-title">Barangay Clearance</h3>
+      <p class="form-subtitle">Please complete all required fields accurately</p>
+    </div>
+    <form onsubmit="submitForm(event, 'BarangayClearance')">
+      <div class="form-row">
+        <div class="form-group">
+          <label class="required">Full Name</label>
+          <input name="fullname" placeholder="Juan Dela Cruz" required>
+        </div>
+        <div class="form-group">
+          <label class="required">Age</label>
+          <input name="age" placeholder="25" type="number" required>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="required">Complete Address</label>
+        <input name="address" placeholder="House No., Street, Barangay Sampaloc" required>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="required">Place of Birth</label>
+          <input name="birthplace" placeholder="City, Province" required>
+        </div>
+        <div class="form-group">
+          <label class="required">Civil Status</label>
+          <input name="civilstatus" placeholder="Single / Married / Widowed" required>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="required">Purpose of Request</label>
+        <input name="purpose" placeholder="e.g., Employment, Business Permit, etc." required>
+      </div>
+      <button type="submit">
+        <span class="btn-text">Submit Request</span>
+        <span class="btn-spinner"><i class="fas fa-circle-notch fa-spin"></i> Processing...</span>
+      </button>
+    </form>
+  </div>
 
-<div id="CertificateOfIndigency" class="form-container">
-  <span class="back-btn" onclick="goBack()">← Back</span>
-  <h3 class="form-title">Certificate of Indigency</h3>
-  <form onsubmit="submitForm(event, 'CertificateOfIndigency')">
-    <input name="fullname" placeholder="Full Name" required>
-    <input name="address" placeholder="Address" required>
-    <input name="age" placeholder="Age" type="number" required>
-    <input name="birthplace" placeholder="Place of Birth" required>
-    <input name="purpose" placeholder="Purpose" required>
-    <input name="civilstatus" placeholder="Civil Status" required>
-    <input name="lengthofstay" placeholder="Length of Stay" required>
-    <button type="submit"><span class="btn-text">Submit</span><span class="btn-spinner"><i class="fas fa-spinner fa-spin"></i> Sending...</span></button>
-  </form>
-</div>
+  <div id="CertificateOfIndigency" class="form-container">
+    <span class="back-btn" onclick="goBack()"><i class="fas fa-arrow-left"></i> Back to Services</span>
+    <div class="form-header">
+      <div class="form-icon"><i class="fas fa-hand-holding-heart"></i></div>
+      <h3 class="form-title">Certificate of Indigency</h3>
+      <p class="form-subtitle">Please complete all required fields accurately</p>
+    </div>
+    <form onsubmit="submitForm(event, 'CertificateOfIndigency')">
+      <div class="form-row">
+        <div class="form-group">
+          <label class="required">Full Name</label>
+          <input name="fullname" placeholder="Juan Dela Cruz" required>
+        </div>
+        <div class="form-group">
+          <label class="required">Age</label>
+          <input name="age" placeholder="25" type="number" required>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="required">Complete Address</label>
+        <input name="address" placeholder="House No., Street, Barangay Sampaloc" required>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="required">Place of Birth</label>
+          <input name="birthplace" placeholder="City, Province" required>
+        </div>
+        <div class="form-group">
+          <label class="required">Civil Status</label>
+          <input name="civilstatus" placeholder="Single / Married / Widowed" required>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="required">Length of Stay</label>
+          <input name="lengthofstay" placeholder="e.g., 5 years" required>
+        </div>
+        <div class="form-group">
+          <label class="required">Purpose</label>
+          <input name="purpose" placeholder="Medical / Educational Assistance" required>
+        </div>
+      </div>
+      <button type="submit">
+        <span class="btn-text">Submit Request</span>
+        <span class="btn-spinner"><i class="fas fa-circle-notch fa-spin"></i> Processing...</span>
+      </button>
+    </form>
+  </div>
 
-<div id="BarangayID" class="form-container">
-  <span class="back-btn" onclick="goBack()">← Back</span>
-  <h3 class="form-title">Barangay ID</h3>
-  <form onsubmit="submitForm(event, 'BarangayID')">
-    <input name="fullname" placeholder="Full Name" required>
-    <input name="address" placeholder="Address" required>
-    <input name="age" placeholder="Age" type="number" required>
-    <input name="birthplace" placeholder="Place of Birth" required>
-    <input name="civilstatus" placeholder="Civil Status" required>
-    <button type="submit"><span class="btn-text">Submit</span><span class="btn-spinner"><i class="fas fa-spinner fa-spin"></i> Sending...</span></button>
-  </form>
-</div>
+  <div id="BarangayID" class="form-container">
+    <span class="back-btn" onclick="goBack()"><i class="fas fa-arrow-left"></i> Back to Services</span>
+    <div class="form-header">
+      <div class="form-icon"><i class="fas fa-id-card"></i></div>
+      <h3 class="form-title">Barangay ID Application</h3>
+      <p class="form-subtitle">Please complete all required fields accurately</p>
+    </div>
+    <form onsubmit="submitForm(event, 'BarangayID')">
+      <div class="form-row">
+        <div class="form-group">
+          <label class="required">Full Name</label>
+          <input name="fullname" placeholder="Juan Dela Cruz" required>
+        </div>
+        <div class="form-group">
+          <label class="required">Age</label>
+          <input name="age" placeholder="25" type="number" required>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="required">Complete Address</label>
+        <input name="address" placeholder="House No., Street, Barangay Sampaloc" required>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="required">Place of Birth</label>
+          <input name="birthplace" placeholder="City, Province" required>
+        </div>
+        <div class="form-group">
+          <label class="required">Civil Status</label>
+          <input name="civilstatus" placeholder="Single / Married / Widowed" required>
+        </div>
+      </div>
+      <button type="submit">
+        <span class="btn-text">Submit Application</span>
+        <span class="btn-spinner"><i class="fas fa-circle-notch fa-spin"></i> Processing...</span>
+      </button>
+    </form>
+  </div>
 
-<div id="CertificateOfResidency" class="form-container">
-  <span class="back-btn" onclick="goBack()">← Back</span>
-  <h3 class="form-title">Certificate of Residency</h3>
-  <form onsubmit="submitForm(event, 'CertificateOfResidency')">
-    <input name="fullname" placeholder="Full Name" required>
-    <input name="address" placeholder="Address" required>
-    <input name="age" placeholder="Age" type="number" required>
-    <input name="birthplace" placeholder="Place of Birth" required>
-    <input name="purpose" placeholder="Purpose" required>
-    <input name="civilstatus" placeholder="Civil Status" required>
-    <input name="lengthofstay" placeholder="Length of Stay" required>
-    <button type="submit"><span class="btn-text">Submit</span><span class="btn-spinner"><i class="fas fa-spinner fa-spin"></i> Sending...</span></button>
-  </form>
+  <div id="CertificateOfResidency" class="form-container">
+    <span class="back-btn" onclick="goBack()"><i class="fas fa-arrow-left"></i> Back to Services</span>
+    <div class="form-header">
+      <div class="form-icon"><i class="fas fa-home"></i></div>
+      <h3 class="form-title">Certificate of Residency</h3>
+      <p class="form-subtitle">Please complete all required fields accurately</p>
+    </div>
+    <form onsubmit="submitForm(event, 'CertificateOfResidency')">
+      <div class="form-row">
+        <div class="form-group">
+          <label class="required">Full Name</label>
+          <input name="fullname" placeholder="Juan Dela Cruz" required>
+        </div>
+        <div class="form-group">
+          <label class="required">Age</label>
+          <input name="age" placeholder="25" type="number" required>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="required">Complete Address</label>
+        <input name="address" placeholder="House No., Street, Barangay Sampaloc" required>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="required">Place of Birth</label>
+          <input name="birthplace" placeholder="City, Province" required>
+        </div>
+        <div class="form-group">
+          <label class="required">Civil Status</label>
+          <input name="civilstatus" placeholder="Single / Married / Widowed" required>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="required">Length of Stay</label>
+          <input name="lengthofstay" placeholder="e.g., 5 years" required>
+        </div>
+        <div class="form-group">
+          <label class="required">Purpose</label>
+          <input name="purpose" placeholder="e.g., School Requirement, Employment" required>
+        </div>
+      </div>
+      <button type="submit">
+        <span class="btn-text">Submit Request</span>
+        <span class="btn-spinner"><i class="fas fa-circle-notch fa-spin"></i> Processing...</span>
+      </button>
+    </form>
+  </div>
+
+  <footer>
+    <div class="footer-links">
+      <a href="#"><i class="fas fa-phone"></i> Contact Us</a>
+      <a href="#"><i class="fas fa-clock"></i> Office Hours</a>
+      <a href="#"><i class="fas fa-map-marker-alt"></i> Location</a>
+    </div>
+    <p>&copy; 2024 Barangay Sampaloc. All rights reserved. | Official Government Portal</p>
+  </footer>
 </div>
 
 <script>
@@ -156,6 +637,7 @@
 const cards = document.querySelectorAll('.card');
 const forms = document.querySelectorAll('.form-container');
 const cardGrid = document.querySelector('.cards');
+const sectionTitle = document.querySelector('.section-title');
 
 cards.forEach(card => {
   card.addEventListener('click', () => {
@@ -163,12 +645,16 @@ cards.forEach(card => {
     forms.forEach(f => f.classList.remove('active'));
     target.classList.add('active');
     cardGrid.style.display = 'none';
+    sectionTitle.style.display = 'none';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   });
 });
 
 function goBack(){
   forms.forEach(f => f.classList.remove('active'));
   cardGrid.style.display = 'grid';
+  sectionTitle.style.display = 'flex';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 // Persistent lock on page load
@@ -176,10 +662,13 @@ document.addEventListener("DOMContentLoaded", () => {
   forms.forEach(f => {
     const sheetName = f.id;
     if(localStorage.getItem(sheetName) === "submitted") {
-      Array.from(f.elements).forEach(el => el.disabled = true);
+      Array.from(f.elements).forEach(el => {
+        if(el.tagName === 'INPUT') el.disabled = true;
+      });
       const submitBtn = f.querySelector('button[type="submit"]');
-      submitBtn.textContent = "Submitted ✅";
-      submitBtn.style.background = "#6c757d";
+      submitBtn.innerHTML = '<span class="status-badge"><i class="fas fa-check-circle"></i> Submitted Successfully</span>';
+      submitBtn.disabled = true;
+      submitBtn.style.background = '#6b7280';
     }
   });
 });
@@ -193,7 +682,7 @@ async function submitForm(e, sheet) {
   const btnSpinner = submitBtn.querySelector('.btn-spinner');
 
   btnText.style.display = 'none';
-  btnSpinner.style.display = 'inline-block';
+  btnSpinner.style.display = 'inline-flex';
   submitBtn.disabled = true;
 
   const data = {};
@@ -211,10 +700,12 @@ async function submitForm(e, sheet) {
 
     const result = await response.json();
     if(result.result === "success"){
-      alert("✅ Form submitted to " + result.sheet + " successfully!");
-      Array.from(form.elements).forEach(el => el.disabled = true);
-      submitBtn.textContent = "Submitted ✅";
-      submitBtn.style.background = "#6c757d";
+      alert("✅ Your request has been submitted successfully to " + result.sheet + "!\n\nPlease wait for confirmation via text or email.");
+      Array.from(form.elements).forEach(el => {
+        if(el.tagName === 'INPUT') el.disabled = true;
+      });
+      submitBtn.innerHTML = '<span class="status-badge"><i class="fas fa-check-circle"></i> Submitted Successfully</span>';
+      submitBtn.style.background = '#6b7280';
       localStorage.setItem(sheet, "submitted");
     } else {
       alert("❌ Error: " + result.message);
