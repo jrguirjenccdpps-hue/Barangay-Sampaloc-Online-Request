@@ -286,6 +286,19 @@
         }
         
         .office-hours.active { display: block; }
+
+        /* Status badges */
+        .status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        .status-pending { background: #fef3c7; color: #92400e; }
+        .status-processing { background: #dbeafe; color: #1e40af; }
+        .status-completed { background: #d1fae5; color: #065f46; }
     </style>
 </head>
 <body>
@@ -464,7 +477,7 @@
             <div class="card-title">🔍 Track Your Request</div>
             <div style="display: flex; gap: 10px;">
                 <input type="text" class="form-input" id="trackInput" 
-                       placeholder="Enter ticket number (e.g., BRGY-2024-123456)">
+                       placeholder="Enter ticket number (e.g., BRGY-260312-1234)">
                 <button class="btn btn-primary" onclick="trackRequest()" style="width: auto;">
                     Track
                 </button>
@@ -586,6 +599,7 @@
             }
         }
         
+        // FIXED: Added proper Content-Type header and error handling
         async function submitRequest(event) {
             event.preventDefault();
             
@@ -618,6 +632,9 @@
             try {
                 const response = await fetch(SCRIPT_URL, {
                     method: 'POST',
+                    headers: {
+                        'Content-Type': 'text/plain;charset=utf-8',  // FIXED: Required for Apps Script
+                    },
                     body: JSON.stringify(formData)
                 });
                 
@@ -708,6 +725,7 @@ Office Hours: Monday-Friday, 8:00 AM - 5:00 PM
             }, 300);
         }
         
+        // FIXED: Actually calls the backend to track requests
         async function trackRequest() {
             const input = document.getElementById('trackInput');
             const resultDiv = document.getElementById('trackResult');
@@ -721,20 +739,43 @@ Office Hours: Monday-Friday, 8:00 AM - 5:00 PM
             resultDiv.innerHTML = '<p>Searching...</p>';
             
             try {
-                // This would need a new endpoint in Apps Script
-                // For now, showing mock response
-                resultDiv.innerHTML = `
-                    <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #667eea;">
-                        <p><strong>Ticket:</strong> ${ticketNum}</p>
-                        <p><strong>Status:</strong> <span style="color: #f59e0b; font-weight: 600;">Processing</span></p>
-                        <p style="font-size: 14px; color: #666; margin-top: 10px;">
-                            Your request is being processed. Please wait for SMS notification 
-                            or check back later.
-                        </p>
-                    </div>
-                `;
+                // FIXED: Actually call the backend with cache buster
+                const response = await fetch(`${SCRIPT_URL}?action=getRequestByTicket&ticket=${encodeURIComponent(ticketNum)}&_=${Date.now()}`);
+                const data = await response.json();
+                
+                if (data.success && data.request) {
+                    const req = data.request;
+                    const statusClass = req.status ? req.status.toLowerCase() : 'pending';
+                    const statusText = req.status || 'Pending';
+                    
+                    resultDiv.innerHTML = `
+                        <div style="background: white; padding: 20px; border-radius: 8px; border-left: 4px solid #667eea;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                                <h3 style="margin: 0; color: #2d3748;">${req.ticketNumber || ticketNum}</h3>
+                                <span class="status-badge status-${statusClass}">${statusText}</span>
+                            </div>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-size: 14px;">
+                                <div><strong>Service:</strong> ${req.serviceName || 'N/A'}</div>
+                                <div><strong>Name:</strong> ${req.fullName || 'N/A'}</div>
+                                <div><strong>Queue #:</strong> ${req.queueNumber || 'N/A'}</div>
+                                <div><strong>Submitted:</strong> ${req.timestamp ? new Date(req.timestamp).toLocaleDateString() : 'N/A'}</div>
+                            </div>
+                            ${req.status === 'Processing' ? '<p style="margin-top: 15px; color: #667eea; font-weight: 600;">🔄 Your request is now being processed!</p>' : ''}
+                            ${req.status === 'Completed' ? '<p style="margin-top: 15px; color: #10b981; font-weight: 600;">✅ Your request is ready for pickup!</p>' : ''}
+                            ${req.status === 'Pending' ? '<p style="margin-top: 15px; color: #f59e0b; font-weight: 600;">⏳ Please wait for your queue number to be called.</p>' : ''}
+                        </div>
+                    `;
+                } else {
+                    resultDiv.innerHTML = `
+                        <div style="background: #f8d7da; color: #721c24; padding: 15px; border-radius: 8px;">
+                            <strong>Ticket not found</strong><br>
+                            Please check your ticket number and try again.
+                        </div>
+                    `;
+                }
             } catch (error) {
-                resultDiv.innerHTML = '<p style="color: #dc3545;">Error tracking request</p>';
+                console.error('Track error:', error);
+                resultDiv.innerHTML = '<p style="color: #dc3545;">Error tracking request. Please try again.</p>';
             }
         }
     </script>
